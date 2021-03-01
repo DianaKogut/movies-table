@@ -1,0 +1,12 @@
+.app-wrapper {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    app-control-panel {
+        width: 15%;
+        min-width: 200px;
+    }
+    app-table {
+        width: 85%;
+    }
+}

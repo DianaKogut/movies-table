@@ -1,0 +1,92 @@
+[{
+        "Title": "The Land Girls",
+        "Year": "1998",
+        "Director": "David Leland",
+        "Viewers rating": 2.1,
+        "Critics rating": 6
+    },
+    {
+        "Title": "First Love, Last Rites",
+        "Year": "1998",
+        "Director": "Jesse Peretz",
+        "Viewers rating": 3.8,
+        "Critics rating": 3
+    },
+    {
+        "Title": "I Married a Strange Person",
+        "Year": "1977",
+        "Director": "Bill Plympton",
+        "Viewers rating": 6.7,
+        "Critics rating": 5
+    },
+    {
+        "Title": "The Beast from 20,000 Fathoms",
+        "Year": "1953",
+        "Director": "Eugène Lourié",
+        "Viewers rating": 7.5,
+        "Critics rating": 5
+    },
+    {
+        "Title": "Benji",
+        "Year": "1974",
+        "Director": "Joe Camp",
+        "Viewers rating": 7.5,
+        "Critics rating": 7.8
+    },
+    {
+        "Title": "Beauty and the Beast",
+        "Year": "1991",
+        "Director": "Gary Trousdale",
+        "Viewers rating": 4.7,
+        "Critics rating": 5
+    },
+    {
+        "Title": "Black Rain",
+        "Year": "1989",
+        "Director": "Ridley Scott",
+        "Viewers rating": 3.8,
+        "Critics rating": 5.4
+    },
+    {
+        "Title": "Braindead",
+        "Year": "1993",
+        "Director": "Peter Jackson",
+        "Viewers rating": 7.1,
+        "Critics rating": 9.3
+    },
+    {
+        "Title": "Dracula",
+        "Year": "1992",
+        "Director": "Francis Ford Coppola",
+        "Viewers rating": 7.7,
+        "Critics rating": 4.75
+    },
+    {
+        "Title": "Broken Arrow",
+        "Year": "1996",
+        "Director": "John Woo",
+        "Viewers rating": 8.1,
+        "Critics rating": 5.5
+    },
+    {
+        "Title": "Braveheart",
+        "Year": "1995",
+        "Director": "Mel Gibson",
+        "Viewers rating": 10,
+        "Critics rating": 2.1
+    },
+    {
+        "Title": "Blazing Saddles",
+        "Year": "1974",
+        "Director": "Mel Brooks",
+        "Viewers rating": 9.5,
+        "Critics rating": 10
+    },
+    {
+        "Title": "A Bridge Too Far",
+        "Year": "1977",
+        "Director": "Sir Richard Attenborough",
+        "Viewers rating": 4.5,
+        "Critics rating": 7
+    }
+]

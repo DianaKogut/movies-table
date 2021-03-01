@@ -1,0 +1,10 @@
+.table-wrapper {
+    border: 1px solid blue;
+    th,
+    td {
+        border: 1px solid black;
+    }
+    th:hover {
+        cursor: pointer;
+    }
+}
