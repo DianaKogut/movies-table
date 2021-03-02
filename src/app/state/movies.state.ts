@@ -1,33 +1,50 @@
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { MoviesService } from '../services/movies.service';
-import { SetSortBy } from './movies.actions';
-
+import { SetSearchParam, SetSortBy } from './movies.actions';
 
 interface MoviesState {
     sortBy: string;
+    searchString: string;
 };
 
 @State<MoviesState>({
     name: 'moviesState',
     defaults: {
-        sortBy: ''
+        sortBy: '',
+        searchString: ''
     }
 })
 @Injectable()
 export class MoviesStore {
 
-    constructor(private readonly moviesService: MoviesService) { }
+    constructor() { }
 
     @Selector()
     static sortBy(state: MoviesState): string {
         return state.sortBy;
     }
 
+    @Selector()
+    static searchString(state: MoviesState): string {
+        return state.searchString;
+    }
+
     @Action(SetSortBy)
-    setSortBy({ patchState, setState, getState }: StateContext<MoviesState>, { sortBy }) {
+    setSortBy({setState, getState }: StateContext<MoviesState>, { sortBy }) {
         const state = getState();
-        setState({ ...state, sortBy });
+        setState({
+            ...state,
+            sortBy
+        });
+    }
+
+    @Action(SetSearchParam)
+    setSearchParam({setState, getState }: StateContext<MoviesState>, { searchString }) {
+        const state = getState();
+        setState({
+            ...state,
+            searchString
+        });
     }
 
 }

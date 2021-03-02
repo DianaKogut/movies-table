@@ -1,5 +1,8 @@
 import { Component, Input, OnChanges, OnInit, Output, EventEmitter } from '@angular/core';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { Movie } from 'src/app/models/movie.model';
+import { MoviesStore } from 'src/app/state/movies.state';
 
 
 @Component({
@@ -8,16 +11,22 @@ import { Movie } from 'src/app/models/movie.model';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnChanges, OnInit {
-
+  @Select(MoviesStore.searchString)
+  public searchString$: Observable<string>;
+  
   @Input() movies: Array<Movie>;
   @Output() sortMovies = new EventEmitter<string>();
 
   search: string;
   cols: string[] = [];
 
-  constructor() { }
+  constructor(private store: Store) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.searchString$.subscribe(searcString => {
+      this.search = searcString;
+    })
+  }
 
   ngOnChanges() {
     this.getTHeaders();

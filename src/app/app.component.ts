@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { Movie } from './models/movie.model';
@@ -11,7 +11,7 @@ import { MoviesStore } from './state/movies.state';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
 
   @Select(MoviesStore.sortBy)
   public sortBy$: Observable<string>;
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
 
-    this.sortBy$.subscribe(data => {
+    this.sortBy$.subscribe((data: string) => {
       this.sortBy = data;
     });
 
@@ -39,9 +39,7 @@ export class AppComponent implements OnInit{
     } else {
       this.store.dispatch(new SetSortBy(data));
       this.movies = this.movies.slice()
-        .sort((a, b) => a[this.sortBy] > b[this.sortBy] ? 1 : -1)
+        .sort((a, b) => a[this.sortBy] > b[this.sortBy] ? 1 : -1);
     }
   }
-
-
 }
