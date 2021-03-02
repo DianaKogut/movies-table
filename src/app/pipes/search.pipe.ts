@@ -8,7 +8,7 @@ export class SearchPipe implements PipeTransform {
 
   constructor() { }
 
-  transform(movies: Movie[], search: string): any {
+  transform(movies: Movie[], search: string = ''): any {
 
     if (!search.trim()) {
       return movies;

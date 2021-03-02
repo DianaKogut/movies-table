@@ -1,10 +1,19 @@
 .table-wrapper {
-    border: 1px solid blue;
-    th,
-    td {
-        border: 1px solid black;
+    table {
+        width: 100%;
+        padding: 10px 10px;
+        th,
+        td {
+            border: 1px solid #dee1e3;
+            padding: 12px 6px;
+            min-width: 100px;
+        }
+        th {
+            background-color: #FAFAFA;
+        }
     }
-    th:hover {
-        cursor: pointer;
+    .empty-search-result {
+        text-align: center;
+        margin-top: 15px;
     }
 }

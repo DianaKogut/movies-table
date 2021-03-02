@@ -7,14 +7,17 @@ import { Movie } from 'src/app/models/movie.model';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnChanges {
+export class TableComponent implements OnChanges, OnInit {
 
   @Input() movies: Array<Movie>;
   @Output() sortMovies = new EventEmitter<string>();
 
+  search: string;
   cols: string[] = [];
-  
+
   constructor() { }
+
+  ngOnInit() { }
 
   ngOnChanges() {
     this.getTHeaders();
