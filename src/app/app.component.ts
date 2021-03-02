@@ -1,15 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { Movie } from './models/movie.model';
 import { MoviesService } from './services/movies.service';
 import { SetSortBy } from './state/movies.actions';
+import { MoviesStore } from './state/movies.state';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
+
+  @Select(MoviesStore.sortBy)
+  public sortBy$: Observable<string>;
 
   movies: Array<Movie> = [];
   sortBy: string = '';
@@ -18,8 +23,8 @@ export class AppComponent {
 
   ngOnInit() {
 
-    this.store.subscribe(state => {
-      this.sortBy = state.moviesState.sortBy;
+    this.sortBy$.subscribe(data => {
+      this.sortBy = data;
     });
 
     this.moviesService.getMovies()
@@ -28,7 +33,7 @@ export class AppComponent {
       })
   }
 
-  sortMovies(data) {
+  sortMovies(data: string) {
     if (this.sortBy === data) {
       this.movies = this.movies.reverse();
     } else {
@@ -37,4 +42,6 @@ export class AppComponent {
         .sort((a, b) => a[this.sortBy] > b[this.sortBy] ? 1 : -1)
     }
   }
+
+
 }

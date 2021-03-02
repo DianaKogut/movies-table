@@ -19,6 +19,11 @@ export class MoviesStore {
 
     constructor(private readonly moviesService: MoviesService) { }
 
+    @Selector()
+    static sortBy(state: MoviesState): string {
+        return state.sortBy;
+    }
+
     @Action(SetSortBy)
     setSortBy({ patchState, setState, getState }: StateContext<MoviesState>, { sortBy }) {
         const state = getState();
