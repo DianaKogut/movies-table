@@ -1,0 +1,14 @@
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th *ngFor="let col of cols" (click)="sort(col)">{{col}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let movie of movies">
+                <td *ngFor="let key of cols">{{movie[key]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
