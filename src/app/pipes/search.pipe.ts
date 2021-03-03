@@ -2,19 +2,18 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Movie } from '../models/movie.model';
 
 @Pipe({
-  name: 'search'
+  name: 'search',
+  pure: false
 })
 export class SearchPipe implements PipeTransform {
 
   constructor() { }
 
-  transform(movies: Movie[], search: string = ''): any {
-
+  transform(value: any, search: string): any {
     if (!search.trim()) {
-      return movies;
+      return value;
     }
-
-    return movies.filter((movie: Movie) => movie.Title
-      .toLowerCase().includes(search.toLowerCase()))
+    return value.filter((movie: Movie) => movie.Title
+      .toLowerCase().includes(search.toLowerCase()));
   }
 }

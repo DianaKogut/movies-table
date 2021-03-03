@@ -12,6 +12,6 @@ export class MoviesService {
   }
 
   getMovies() {
-    return this.http.get(JSON_URL)
+    return this.http.get(JSON_URL);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SetSearchParam } from 'src/app/state/movies.actions';
 
 @Component({
@@ -18,10 +18,11 @@ export class ControlPanelComponent implements OnInit {
     const searchString = this.searchControl.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    )
+    );
 
     searchString.subscribe(searchString =>
       this.store.dispatch(new SetSearchParam(searchString))
-    )
+    );
   }
+
 }
