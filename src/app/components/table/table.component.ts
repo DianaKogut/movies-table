@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { Movie } from 'src/app/models/movie.model';
-import { MoviesService } from 'src/app/services/movies.service';
-import { SetSortBy } from 'src/app/state/movies.actions';
+import { SetSortParams } from 'src/app/state/movies.actions';
 import { MoviesStore } from 'src/app/state/movies.state';
 
 
@@ -14,28 +12,29 @@ import { MoviesStore } from 'src/app/state/movies.state';
 })
 export class TableComponent implements OnInit {
 
-  @Select(MoviesStore.sortBy)
-  public sortBy$: Observable<string>;
+  @Select(MoviesStore.movies)
+  public movies$: Observable<[]>;
+
+  @Select(MoviesStore.sortDirection)
+  public direction$: Observable<string>;
 
   @Select(MoviesStore.searchString)
   public searchString$: Observable<string>;
 
-  movies: Array<Movie> = [];
-  sortBy: string = '';
+  direction: string = '';
   search: string;
   cols: string[] = [];
 
-  constructor(private store: Store, public moviesService: MoviesService) { }
+  constructor(private store: Store) { }
 
   ngOnInit() {
-    this.moviesService.getMovies()
-      .subscribe((data: Array<Movie>) => {
-        this.movies = data;
-        this.getTHeaders();
-      });
 
-    this.sortBy$.subscribe((data: string) => {
-      this.sortBy = data;
+    this.movies$.subscribe(data => {
+      this.getTHeaders(data)
+    })
+
+    this.direction$.subscribe((data: string) => {
+      this.direction = data;
     });
 
     this.searchString$.subscribe((searcString: string) => {
@@ -43,8 +42,8 @@ export class TableComponent implements OnInit {
     });
   }
 
-  getTHeaders() {
-    this.movies.forEach(movie => {
+  getTHeaders(movies) {
+    movies.forEach(movie => {
       for (let key in movie) {
         if (!this.cols.includes(key)) {
           this.cols.push(key);
@@ -55,13 +54,10 @@ export class TableComponent implements OnInit {
   };
 
   sort(data: string) {
-    if (this.sortBy === data) {
-      this.movies = this.movies.reverse();
+    if (this.direction === 'dsc') {
+      this.store.dispatch(new SetSortParams(data, 'asc'));
     } else {
-      this.store.dispatch(new SetSortBy(data));
-      this.movies = this.movies.slice()
-        .sort((a, b) => a[this.sortBy] > b[this.sortBy] ? 1 : -1);
+      this.store.dispatch(new SetSortParams(data, 'dsc'));
     }
   }
-
 }

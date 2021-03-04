@@ -1,27 +1,69 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { SetSearchParam, SetSortBy } from './movies.actions';
+import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
+
+import { Movie } from '../models/movie.model';
+import { SetMovies, SetSearchParam, SetSortParams } from './movies.actions';
+
+const JSON_URL = '../../assets/movies.json';
 
 interface MoviesState {
-    sortBy: string;
+    sortParams: {
+        sortBy: string;
+        direction: string;
+    };
     searchString: string;
+    movies: [];
 };
 
 @State<MoviesState>({
     name: 'moviesState',
     defaults: {
-        sortBy: '',
-        searchString: ''
+        sortParams: {
+            sortBy: '',
+            direction: 'asc'
+        },
+        searchString: '',
+        movies: []
     }
 })
 @Injectable()
 export class MoviesStore {
 
-    constructor() { }
+    constructor(private http: HttpClient, private store: Store) {
+        this.http.get(JSON_URL).subscribe((data: []) => {
+            this.store.dispatch(new SetMovies(data));
+        });
+    }
+
+    @Selector()
+    static movies(state: MoviesState): Movie[] {
+        const params = state.sortParams;
+        let movies = [...state.movies];
+        if (state.searchString) {
+            movies = movies.filter((movie: Movie) => movie.Title
+                .toLowerCase().includes(state.searchString.toLowerCase()));
+        }
+        const sortCondition = (direction:string) => {
+            if (direction === 'asc') {
+                return (a: any, b: any) => a[params.sortBy] > b[params.sortBy] ? 1 : -1;
+            } else {
+                return (a: any, b: any) => a[params.sortBy] > b[params.sortBy] ? -1 : 1;
+
+            }
+        }
+        return movies.sort(sortCondition(params.direction));
+
+    }
 
     @Selector()
     static sortBy(state: MoviesState): string {
-        return state.sortBy;
+        return state.sortParams.sortBy;
+    }
+
+    @Selector()
+    static sortDirection(state: MoviesState): string {
+        return state.sortParams.direction;
     }
 
     @Selector()
@@ -29,17 +71,29 @@ export class MoviesStore {
         return state.searchString;
     }
 
-    @Action(SetSortBy)
-    setSortBy({setState, getState }: StateContext<MoviesState>, { sortBy }) {
+    @Action(SetMovies)
+    setMovies({ setState, getState }: StateContext<MoviesState>, { movies }) {
         const state = getState();
         setState({
             ...state,
-            sortBy
+            movies
         });
     }
 
+    @Action(SetSortParams)
+    setSortBy({ patchState, getState, dispatch }: StateContext<MoviesState>, { sortBy, direction }) {
+        const state = getState();
+        patchState(
+            {
+                sortParams: {
+                    sortBy, direction
+                }
+            }
+        );
+    }
+
     @Action(SetSearchParam)
-    setSearchParam({setState, getState }: StateContext<MoviesState>, { searchString }) {
+    setSearchParam({ setState, getState }: StateContext<MoviesState>, { searchString }) {
         const state = getState();
         setState({
             ...state,
