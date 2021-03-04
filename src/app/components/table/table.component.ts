@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { Movie } from 'src/app/models/movie.model';
 import { SetSortParams } from 'src/app/state/movies.actions';
 import { MoviesStore } from 'src/app/state/movies.state';
 
@@ -18,11 +19,7 @@ export class TableComponent implements OnInit {
   @Select(MoviesStore.sortDirection)
   public direction$: Observable<string>;
 
-  @Select(MoviesStore.searchString)
-  public searchString$: Observable<string>;
-
   direction: string = '';
-  search: string;
   cols: string[] = [];
 
   constructor(private store: Store) { }
@@ -36,13 +33,9 @@ export class TableComponent implements OnInit {
     this.direction$.subscribe((data: string) => {
       this.direction = data;
     });
-
-    this.searchString$.subscribe((searcString: string) => {
-      this.search = searcString;
-    });
   }
 
-  getTHeaders(movies) {
+  getTHeaders(movies: Movie[]) {
     movies.forEach(movie => {
       for (let key in movie) {
         if (!this.cols.includes(key)) {

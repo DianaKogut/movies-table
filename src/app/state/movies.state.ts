@@ -44,7 +44,7 @@ export class MoviesStore {
             movies = movies.filter((movie: Movie) => movie.Title
                 .toLowerCase().includes(state.searchString.toLowerCase()));
         }
-        const sortCondition = (direction:string) => {
+        const sortCondition = (direction: string) => {
             if (direction === 'asc') {
                 return (a: any, b: any) => a[params.sortBy] > b[params.sortBy] ? 1 : -1;
             } else {
@@ -66,11 +66,6 @@ export class MoviesStore {
         return state.sortParams.direction;
     }
 
-    @Selector()
-    static searchString(state: MoviesState): string {
-        return state.searchString;
-    }
-
     @Action(SetMovies)
     setMovies({ setState, getState }: StateContext<MoviesState>, { movies }) {
         const state = getState();
@@ -85,9 +80,7 @@ export class MoviesStore {
         const state = getState();
         patchState(
             {
-                sortParams: {
-                    sortBy, direction
-                }
+                sortParams: { sortBy, direction }
             }
         );
     }
