@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 import { Store } from '@ngxs/store';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { SetSearchParam } from 'src/app/state/movies.actions';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+
+import { SetFilterByRatingsParams, SetSearchParam } from 'src/app/state/movies.actions';
+
+const DEFAULT_FILTER_BY_VALUE = 'Viewers rating';
 
 @Component({
   selector: 'app-control-panel',
@@ -10,7 +14,14 @@ import { SetSearchParam } from 'src/app/state/movies.actions';
   styleUrls: ['./control-panel.component.scss']
 })
 export class ControlPanelComponent implements OnInit {
+
+  operators = ['>=', '<=', '>', '<'];
   searchControl = new FormControl('');
+  filterByRating = new FormGroup({
+    filterBy: new FormControl(DEFAULT_FILTER_BY_VALUE),
+    operator: new FormControl(this.operators[0]),
+    number: new FormControl(null, [Validators.min(0), Validators.max(10)])
+  });
 
   constructor(private store: Store) { }
 
@@ -20,9 +31,16 @@ export class ControlPanelComponent implements OnInit {
       distinctUntilChanged()
     );
 
+    this.filterByRating.valueChanges.subscribe(data => {
+      if (this.filterByRating.valid) {
+        this.store.dispatch(new SetFilterByRatingsParams(data));
+      } else {
+        console.log('not valid')
+      }
+    });
+
     searchString.subscribe(searchString =>
       this.store.dispatch(new SetSearchParam(searchString))
     );
   }
-
 }

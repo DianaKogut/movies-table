@@ -19,7 +19,11 @@ export class TableComponent implements OnInit {
   @Select(MoviesStore.sortDirection)
   public direction$: Observable<string>;
 
+  @Select(MoviesStore.searchString)
+  public searchString$: Observable<string>;
+
   direction: string = '';
+  search: string;
   cols: string[] = [];
 
   constructor(private store: Store) { }
@@ -32,6 +36,10 @@ export class TableComponent implements OnInit {
 
     this.direction$.subscribe((data: string) => {
       this.direction = data;
+    });
+
+    this.searchString$.subscribe((searcString: string) => {
+      this.search = searcString;
     });
   }
 

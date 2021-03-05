@@ -12,3 +12,8 @@ export class SetMovies {
   static type = '[Movies] Set movies';
   constructor(public movies: []) { }
 }
+
+export class SetFilterByRatingsParams {
+  static type = '[Movies] Set filter params';
+  constructor(public filterByRatingsParams: {}) { }
+}

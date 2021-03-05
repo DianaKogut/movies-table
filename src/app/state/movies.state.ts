@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector, Store } from '@ngxs/store';
 
 import { Movie } from '../models/movie.model';
-import { SetMovies, SetSearchParam, SetSortParams } from './movies.actions';
+import { SetFilterByRatingsParams, SetMovies, SetSearchParam, SetSortParams } from './movies.actions';
 
 const JSON_URL = '../../assets/movies.json';
 
@@ -13,6 +13,10 @@ interface MoviesState {
         direction: string;
     };
     searchString: string;
+    filterByRatingsParams: {
+        filterBy: string;
+        operator: string
+    }
     movies: [];
 };
 
@@ -24,6 +28,10 @@ interface MoviesState {
             direction: 'asc'
         },
         searchString: '',
+        filterByRatingsParams: {
+            filterBy: '',
+            operator: ''
+        },
         movies: []
     }
 })
@@ -36,24 +44,55 @@ export class MoviesStore {
         });
     }
 
+    static searchFilter(movies: Movie[], searchString: string): Movie[] {
+        if (searchString) {
+            return movies.filter((movie: Movie) => movie.Title
+                .toLowerCase().includes(searchString.toLowerCase()));
+        }
+        return movies;
+    }
+
+    static sortCondition = (params) => {
+        if (params.direction === 'asc') {
+            return (a: Movie, b: Movie) => a[params.sortBy] > b[params.sortBy] ? 1 : -1;
+        } else {
+            return (a: Movie, b: Movie) => a[params.sortBy] > b[params.sortBy] ? -1 : 1;
+        }
+    }
+
+    static filterByRatings(movie: Movie, filterParams) {
+        let { filterBy, number, operator } = filterParams;
+        let flag = false;
+
+        if (!(number && operator && filterBy)) {
+            return true;
+        }
+        switch (operator) {
+            case '>=':
+                flag = movie[filterBy] >= number;
+                break;
+            case '<=':
+                flag = movie[filterBy] <= number;
+                break;
+            case '>':
+                flag = movie[filterBy] > number;
+                break;
+            case '<':
+                flag = movie[filterBy] < number;
+                break;
+        }
+        return flag;
+    }
+
     @Selector()
     static movies(state: MoviesState): Movie[] {
-        const params = state.sortParams;
-        let movies = [...state.movies];
-        if (state.searchString) {
-            movies = movies.filter((movie: Movie) => movie.Title
-                .toLowerCase().includes(state.searchString.toLowerCase()));
-        }
-        const sortCondition = (direction: string) => {
-            if (direction === 'asc') {
-                return (a: any, b: any) => a[params.sortBy] > b[params.sortBy] ? 1 : -1;
-            } else {
-                return (a: any, b: any) => a[params.sortBy] > b[params.sortBy] ? -1 : 1;
+        const { sortParams, filterByRatingsParams } = state;
+        let movies: Movie[] = [...state.movies];
+        
+        movies = this.searchFilter(movies, state.searchString);
+        movies = movies.filter(item => this.filterByRatings(item, filterByRatingsParams));
 
-            }
-        }
-        return movies.sort(sortCondition(params.direction));
-
+        return movies.sort(this.sortCondition(sortParams));
     }
 
     @Selector()
@@ -66,6 +105,11 @@ export class MoviesStore {
         return state.sortParams.direction;
     }
 
+    @Selector()
+    static searchString(state: MoviesState): string {
+        return state.searchString;
+    }
+
     @Action(SetMovies)
     setMovies({ setState, getState }: StateContext<MoviesState>, { movies }) {
         const state = getState();
@@ -76,7 +120,7 @@ export class MoviesStore {
     }
 
     @Action(SetSortParams)
-    setSortBy({ patchState, getState, dispatch }: StateContext<MoviesState>, { sortBy, direction }) {
+    setSortBy({ patchState, getState }: StateContext<MoviesState>, { sortBy, direction }) {
         const state = getState();
         patchState(
             {
@@ -91,6 +135,15 @@ export class MoviesStore {
         setState({
             ...state,
             searchString
+        });
+    }
+
+    @Action(SetFilterByRatingsParams)
+    setFilterByRatingsParams({ setState, getState }: StateContext<MoviesState>, { filterByRatingsParams }) {
+        const state = getState();
+        setState({
+            ...state,
+            filterByRatingsParams
         });
     }
 
