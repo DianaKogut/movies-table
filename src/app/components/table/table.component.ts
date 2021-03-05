@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+
 import { Movie } from 'src/app/models/movie.model';
 import { SetSortParams } from 'src/app/state/movies.actions';
 import { MoviesStore } from 'src/app/state/movies.state';
@@ -25,12 +27,14 @@ export class TableComponent implements OnInit {
   direction: string = '';
   search: string;
   cols: string[] = [];
+  emptySearchResult: boolean = false;
 
   constructor(private store: Store) { }
 
   ngOnInit() {
 
     this.movies$.subscribe(data => {
+      this.emptySearchResult = data.length===0;
       this.getTHeaders(data)
     })
 

@@ -7,11 +7,10 @@
         </thead>
         <tbody #searchResults>
             <tr *ngFor="let movie of movies$ | async">
-                <!-- <td *ngFor="let key of cols" appHighlight [searchString]="search" [key]="key">
-                    {{movie[key]}}</td> -->
-                <td *ngFor="let key of cols">{{movie[key]}}</td>
+                <td *ngFor="let key of cols" appHighlight [searchString]="search" [key]="key" [content]="movie[key]">
+                    {{movie[key]}}</td>
             </tr>
         </tbody>
     </table>
-    <div *ngIf="searchResults.children.length===0" class="empty-search-result">No movies found</div>
+    <div *ngIf="emptySearchResult" class="empty-search-result">No movies found</div>
 </div>

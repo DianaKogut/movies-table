@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Store } from '@ngxs/store';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { SetFilterByRatingsParams, SetSearchParam } from 'src/app/state/movies.actions';
 
@@ -16,6 +16,7 @@ const DEFAULT_FILTER_BY_VALUE = 'Viewers rating';
 export class ControlPanelComponent implements OnInit {
 
   operators = ['>=', '<=', '>', '<'];
+
   searchControl = new FormControl('');
   filterByRating = new FormGroup({
     filterBy: new FormControl(DEFAULT_FILTER_BY_VALUE),

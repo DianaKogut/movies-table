@@ -7,25 +7,35 @@
     </div>
     <div class="filters-panel">
         <div class="filter-by-rating" [formGroup]="filterByRating">
-            <h4>Filter by rating</h4>
-            <div>
-                <input type="radio" id="viewersRating" value="Viewers rating" formControlName="filterBy">
-                <label for="viewersRating">Viewers rating</label>
-            </div>
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Filter by rating
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div>
+                    <input type="radio" id="viewersRating" value="Viewers rating" formControlName="filterBy">
+                    <label for="viewersRating">Viewers rating</label>
+                </div>
 
-            <div>
-                <input type="radio" id="criticsRating" value="Critics rating" formControlName="filterBy">
-                <label for="criticsRating">Critics rating</label>
-            </div>
+                <div>
+                    <input type="radio" id="criticsRating" value="Critics rating" formControlName="filterBy">
+                    <label for="criticsRating">Critics rating</label>
+                </div>
 
-            <div class="filter-by-rating-operator">
-                <select formControlName="operator">
-                    <option *ngFor="let operator of operators" [ngValue]="operator">
-                        {{ operator }}
-                    </option>
-                </select>
-                <input type="number" min="0" max="10" formControlName="number">
-            </div>
+                <div class="filter-by-rating-operator">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Operator</mat-label>
+                        <mat-select formControlName="operator">
+                            <mat-option *ngFor="let operator of operators" [value]="operator">
+                                {{operator}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <input type="number" min="0" max="10" placeholder="Enter number" formControlName="number">
+                </div>
+            </mat-expansion-panel>
         </div>
     </div>
 </div>
