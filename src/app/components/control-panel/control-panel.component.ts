@@ -27,10 +27,12 @@ export class ControlPanelComponent implements OnInit {
   constructor(private store: Store) { }
 
   ngOnInit(): void {
-    const searchString = this.searchControl.valueChanges.pipe(
+    this.searchControl.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    );
+    ).subscribe(searchString =>
+      this.store.dispatch(new SetSearchParam(searchString))
+    );;
 
     this.filterByRating.valueChanges.subscribe(data => {
       if (this.filterByRating.valid) {
@@ -39,9 +41,5 @@ export class ControlPanelComponent implements OnInit {
         console.log('not valid')
       }
     });
-
-    searchString.subscribe(searchString =>
-      this.store.dispatch(new SetSearchParam(searchString))
-    );
   }
 }

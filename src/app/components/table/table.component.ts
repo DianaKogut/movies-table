@@ -19,15 +19,11 @@ export class TableComponent implements OnInit {
     moveItemInArray(this.cols, event.previousIndex, event.currentIndex);
   }
 
-
   @Select(MoviesStore.movies)
   public movies$: Observable<[]>;
 
   @Select(MoviesStore.sortDirection)
   public direction$: Observable<string>;
-
-  @Select(MoviesStore.searchString)
-  public searchString$: Observable<string>;
 
   direction: string = '';
   cols: string[] = [];

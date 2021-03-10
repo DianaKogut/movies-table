@@ -1,12 +1,11 @@
 import {
-  Component, 
-  Directive,
+  Component,
   ComponentFactoryResolver,
-  ElementRef,
   Input,
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
+import { Directive } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MoviesStore } from '../state/movies.state';
@@ -18,8 +17,11 @@ export class HighlightDirective {
   searchString: string = '';
   content: string = '';
 
-  constructor(private elementRef: ElementRef,
-    private templateRef: TemplateRef<any>,
+  @Input() set appHighlight(value: string) {
+    this.content = value;
+  }
+
+  constructor(private templateRef: TemplateRef<any>,
     private viewContainerRef: ViewContainerRef,
     private componentFactoryResolver: ComponentFactoryResolver) { }
 
@@ -29,18 +31,11 @@ export class HighlightDirective {
 
   ngOnInit() {
     this.searchString$
-      .subscribe(data => {
+      .subscribe((data: string) => {
         this.searchString = data;
         this.viewContainerRef.clear();
         this.highlightTheText()
-
       });
-  }
-
-  ngAfterViewChecked() {
-    if (this.elementRef.nativeElement.previousSibling) {
-      this.content = this.elementRef.nativeElement.parentNode.innerText;
-    }
   }
 
   highlightTheText() {
@@ -52,20 +47,17 @@ export class HighlightDirective {
       const replacedValue = this.content.split(match[0]);
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(HighlightComponent);
       const componentRef = this.viewContainerRef.createComponent(componentFactory);
-
       componentRef.instance.content = replacedValue;
       componentRef.instance.match = match;
     }
   }
-
 }
+
 
 @Component({
   selector: 'highlight',
   template: `
-  <ng-container 
-    *ngFor = "let el of content; let i = index">{{el}}<mark *ngIf="match[i]">{{match[i]}}</mark>
-  </ng-container>`
+  <ng-container *ngFor="let el of content; let i=index">{{el}}<mark>{{match[i]}}</mark></ng-container>`
 })
 export class HighlightComponent {
   @Input() content: string[] = [];
