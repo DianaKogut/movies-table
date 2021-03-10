@@ -39,16 +39,20 @@ export class HighlightDirective {
   }
 
   highlightTheText() {
-    const regExp = new RegExp(this.searchString, 'gi');
-    const match = this.content.match(regExp);
-    if (!match || !match[0] || !this.searchString) {
-      this.viewContainerRef.createEmbeddedView(this.templateRef);
-    } else {
-      const replacedValue = this.content.split(match[0]);
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(HighlightComponent);
-      const componentRef = this.viewContainerRef.createComponent(componentFactory);
-      componentRef.instance.content = replacedValue;
-      componentRef.instance.match = match;
+    try {
+      const regExp = new RegExp(this.searchString, 'gi');
+      const match = this.content.match(regExp);
+      if (!match || !this.searchString) {
+        this.viewContainerRef.createEmbeddedView(this.templateRef);
+      } else {
+        const replacedValue = this.content.split(regExp);
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(HighlightComponent);
+        const componentRef = this.viewContainerRef.createComponent(componentFactory);
+        componentRef.instance.content = replacedValue;
+        componentRef.instance.match = match;
+      }
+    } catch (e) {
+      console.log('ERROR', e.message)
     }
   }
 }
