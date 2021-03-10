@@ -7,6 +7,7 @@ import { Movie } from 'src/app/models/movie.model';
 import { SetSortParams } from 'src/app/state/movies.actions';
 import { MoviesStore } from 'src/app/state/movies.state';
 
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-table',
@@ -14,6 +15,10 @@ import { MoviesStore } from 'src/app/state/movies.state';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.cols, event.previousIndex, event.currentIndex);
+  }
+
 
   @Select(MoviesStore.movies)
   public movies$: Observable<[]>;
@@ -25,7 +30,6 @@ export class TableComponent implements OnInit {
   public searchString$: Observable<string>;
 
   direction: string = '';
-  search: string;
   cols: string[] = [];
   emptySearchResult: boolean = false;
 
@@ -34,16 +38,12 @@ export class TableComponent implements OnInit {
   ngOnInit() {
 
     this.movies$.subscribe(data => {
-      this.emptySearchResult = data.length===0;
-      this.getTHeaders(data)
+      this.emptySearchResult = data.length === 0;
+      this.getTHeaders(data);
     })
 
     this.direction$.subscribe((data: string) => {
       this.direction = data;
-    });
-
-    this.searchString$.subscribe((searcString: string) => {
-      this.search = searcString;
     });
   }
 

@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { SetFilterByRatingsParams, SetSearchParam } from 'src/app/state/movies.actions';
 
-const DEFAULT_FILTER_BY_VALUE = 'Viewers rating';
+const DEFAULT_FILTER_BY_VALUE = 'Viewers';
 
 @Component({
   selector: 'app-control-panel',

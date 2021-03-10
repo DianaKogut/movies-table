@@ -1,16 +1,24 @@
 <div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th *ngFor="let col of cols" (click)="sort(col)">{{col}} </th>
-            </tr>
-        </thead>
-        <tbody #searchResults>
-            <tr *ngFor="let movie of movies$ | async">
-                <td *ngFor="let key of cols" appHighlight [searchString]="search" [key]="key" [content]="movie[key]">
-                    {{movie[key]}}</td>
-            </tr>
-        </tbody>
+    <table mat-table [dataSource]="movies$ | async" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+
+        <ng-container matColumnDef="Title">
+            <th mat-header-cell cdkDrag *matHeaderCellDef (click)="sort($event.target.innerText)"> Title </th>
+            <td mat-cell *matCellDef="let element">
+                <ng-container *appHighlight>{{element.Title}} </ng-container>
+            </td>
+        </ng-container>
+
+        <ng-container *ngFor="let col of cols">
+            <ng-container *ngIf="col!=='Title'" [matColumnDef]="col">
+                <th mat-header-cell cdkDrag *matHeaderCellDef (click)="sort($event.target.innerText)"> {{col}} </th>
+                <td mat-cell *matCellDef="let element"> {{element[col]}} </td>
+            </ng-container>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="cols"> </tr>
+        <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+
+
     </table>
     <div *ngIf="emptySearchResult" class="empty-search-result">No movies found</div>
 </div>

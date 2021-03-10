@@ -1,39 +1,73 @@
-import { ElementRef, Input, Renderer2 } from '@angular/core';
-import { Directive } from '@angular/core';
+import {
+  Component, 
+  Directive,
+  ComponentFactoryResolver,
+  ElementRef,
+  Input,
+  TemplateRef,
+  ViewContainerRef
+} from '@angular/core';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { MoviesStore } from '../state/movies.state';
 
 @Directive({
   selector: '[appHighlight]'
 })
 export class HighlightDirective {
+  searchString: string = '';
+  content: string = '';
 
-  @Input() searchString: string;
-  @Input() key: string;
-  @Input() content: string;
+  constructor(private elementRef: ElementRef,
+    private templateRef: TemplateRef<any>,
+    private viewContainerRef: ViewContainerRef,
+    private componentFactoryResolver: ComponentFactoryResolver) { }
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) { }
 
-  ngAfterContentChecked() {
-    this.highlightTheText();
+  @Select(MoviesStore.searchString)
+  public searchString$: Observable<string>;
+
+  ngOnInit() {
+    this.searchString$
+      .subscribe(data => {
+        this.searchString = data;
+        this.viewContainerRef.clear();
+        this.highlightTheText()
+
+      });
   }
 
-  highlightTheText() {
-    if (this.key === 'Title') {
-      const regExp = new RegExp(this.searchString, 'gi');
-      const match = this.elementRef.nativeElement.innerText.match(regExp);
-      if (match) {
-        this.setContent(this.content.replace(regExp,
-          "<mark>" + match[0] + "</mark>"));
-      } else {
-        this.setContent(this.content)
-      }
+  ngAfterViewChecked() {
+    if (this.elementRef.nativeElement.previousSibling) {
+      this.content = this.elementRef.nativeElement.parentNode.innerText;
     }
   }
 
-  setContent(content: string) {
-    this.renderer.setProperty(
-      this.elementRef.nativeElement,
-      'innerHTML',
-      content
-    );
+  highlightTheText() {
+    const regExp = new RegExp(this.searchString, 'gi');
+    const match = this.content.match(regExp);
+    if (!match || !match[0] || !this.searchString) {
+      this.viewContainerRef.createEmbeddedView(this.templateRef);
+    } else {
+      const replacedValue = this.content.split(match[0]);
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(HighlightComponent);
+      const componentRef = this.viewContainerRef.createComponent(componentFactory);
+
+      componentRef.instance.content = replacedValue;
+      componentRef.instance.match = match;
+    }
   }
+
+}
+
+@Component({
+  selector: 'highlight',
+  template: `
+  <ng-container 
+    *ngFor = "let el of content; let i = index">{{el}}<mark *ngIf="match[i]">{{match[i]}}</mark>
+  </ng-container>`
+})
+export class HighlightComponent {
+  @Input() content: string[] = [];
+  @Input() match: string[] = [];
 }

@@ -88,11 +88,11 @@ export class MoviesStore {
     @Selector()
     static movies(state: MoviesState): Movie[] {
         const { sortParams, filterByRatingsParams } = state;
+
         let movies: Movie[] = [...state.movies];
         
         movies = this.searchFilter(movies, state.searchString);
         movies = movies.filter(item => this.filterByRatings(item, filterByRatingsParams));
-
         return movies.sort(this.sortCondition(sortParams));
     }
 
