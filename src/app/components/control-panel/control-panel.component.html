@@ -1,5 +1,41 @@
 <div class="control-panel-wrapper">
-    <div>
-        <label>Search<input type="text"></label>
+    <div class="search-panel">
+        <label>
+            Search
+            <input type="text" [formControl]="searchControl">
+        </label>
+    </div>
+    <div class="filters-panel">
+        <div class="filter-by-rating" [formGroup]="filterByRating">
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Filter by rating
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div>
+                    <input type="radio" id="viewersRating" value="Viewers" formControlName="filterBy">
+                    <label for="viewersRating">Viewers rating</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="criticsRating" value="Critics" formControlName="filterBy">
+                    <label for="criticsRating">Critics rating</label>
+                </div>
+
+                <div class="filter-by-rating-operator">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Operator</mat-label>
+                        <mat-select formControlName="operator">
+                            <mat-option *ngFor="let operator of operators" [value]="operator">
+                                {{operator}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <input type="number" min="0" max="10" placeholder="Enter number" formControlName="number">
+                </div>
+            </mat-expansion-panel>
+        </div>
     </div>
 </div>
