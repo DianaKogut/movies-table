@@ -2,47 +2,57 @@ import {
   Component,
   ComponentFactoryResolver,
   Input,
+  OnDestroy,
+  OnInit,
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
 import { Directive } from '@angular/core';
+
 import { Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { MoviesStore } from '../state/movies.state';
 
 @Directive({
   selector: '[appHighlight]'
 })
-export class HighlightDirective {
-  searchString: string = '';
-  content: string = '';
+export class HighlightDirective implements OnInit, OnDestroy {
+  @Select(MoviesStore.searchString)
+  public searchString$: Observable<string>;
 
   @Input() set appHighlight(value: string) {
     this.content = value;
-  }
+  };
+
+  content: string = '';
+  private _unsubscribe = new Subject<void>();
 
   constructor(private templateRef: TemplateRef<any>,
     private viewContainerRef: ViewContainerRef,
     private componentFactoryResolver: ComponentFactoryResolver) { }
 
 
-  @Select(MoviesStore.searchString)
-  public searchString$: Observable<string>;
-
-  ngOnInit() {
-    this.searchString$
-      .subscribe((data: string) => {
-        this.searchString = data;
+  ngOnInit(): void {
+    this.searchString$.pipe(
+      takeUntil(this._unsubscribe)
+    ).subscribe((data: string) => {
         this.viewContainerRef.clear();
-        this.highlightTheText()
+        this.highlightTheText(data)
       });
   }
 
-  highlightTheText() {
+  ngOnDestroy(): void {
+    this._unsubscribe.next();
+    this._unsubscribe.complete();
+  }
+
+  highlightTheText(searchString: string): void {
     try {
-      const regExp = new RegExp(this.searchString, 'gi');
+      const regExp = new RegExp(searchString, 'gi');
       const match = this.content.match(regExp);
-      if (!match || !this.searchString) {
+      if (!match || !searchString) {
         this.viewContainerRef.createEmbeddedView(this.templateRef);
       } else {
         const replacedValue = this.content.split(regExp);
@@ -61,7 +71,10 @@ export class HighlightDirective {
 @Component({
   selector: 'highlight',
   template: `
-  <ng-container *ngFor="let el of content; let i=index">{{el}}<mark>{{match[i]}}</mark></ng-container>`
+  <ng-container 
+    *ngFor="let el of content; 
+    let i=index">{{el}}<mark>{{match[i]}}</mark>
+  </ng-container>`
 })
 export class HighlightComponent {
   @Input() content: string[] = [];

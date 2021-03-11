@@ -32,13 +32,11 @@ export class ControlPanelComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(searchString =>
       this.store.dispatch(new SetSearchParam(searchString))
-    );;
+    );
 
     this.filterByRating.valueChanges.subscribe(data => {
       if (this.filterByRating.valid) {
         this.store.dispatch(new SetFilterByRatingsParams(data));
-      } else {
-        console.log('not valid')
       }
     });
   }
