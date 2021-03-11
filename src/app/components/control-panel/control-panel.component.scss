@@ -44,4 +44,15 @@
         max-width: 120px;
         min-width: 90px;
     }
+    .cdk-drag-preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(29, 53, 87, 1);
+        color: #fff;
+    }
+    .cdk-drag-placeholder {
+        background-color: rgba(29, 53, 87, 0.6) !important;
+        color: #fff;
+    }
 }
